@@ -166,6 +166,30 @@
     });
   }
 
+  /* ---------- probe launcher ---------- */
+
+  var atkMove = document.getElementById("atkMove");
+  var probeBtn = document.getElementById("probeBtn");
+  var probeCount = document.getElementById("probeCount");
+  var deflected = 0;
+
+  function fireProbe() {
+    if (atkMove && typeof atkMove.beginElement === "function") {
+      try { atkMove.beginElement(); } catch (e) { /* SMIL unsupported */ }
+    }
+  }
+
+  if (atkMove && probeCount) {
+    atkMove.addEventListener("beginEvent", function () {
+      setTimeout(function () {
+        deflected += 1;
+        probeCount.textContent = String(deflected);
+      }, 4500);
+    });
+  }
+  if (probeBtn) probeBtn.addEventListener("click", fireProbe);
+  if (atkMove && !reduced) setInterval(fireProbe, 12000);
+
   /* ---------- terminal easter egg ---------- */
 
   var termOut = document.getElementById("termOut");
@@ -175,7 +199,7 @@
     var PROJECTS = "gridcloak/  dnp3_decoy/  ota-shield/  sdnp-gateway/  memproof/  mcp/  agent-p4/  adaptive_routing/  fdna/";
     var CMDS = {
       help: function () {
-        return "commands: whoami · ls projects · cat skills · decoy · theme · resume · clear";
+        return "commands: whoami · ls projects · cat skills · decoy · probe · theme · resume · clear";
       },
       whoami: function () {
         return "philip akekudaga — operator turned researcher.\n8 yrs utility OT/IT -> NYSDOH CISO office -> PhD @ URI CYPHER Lab.";
@@ -187,6 +211,10 @@
       },
       decoy: function () {
         return "spawning virtual RTU... ok\nMAC 02:42:d3:c0:11:07   port 20000/tcp open (dnp3)\nwaiting for scans...    [DECOY ENGAGED]";
+      },
+      probe: function () {
+        fireProbe();
+        return "probe launched against the switch — watch the diagram up top.";
       },
       theme: function () {
         var next = doc.getAttribute("data-theme") === "dark" ? "light" : "dark";

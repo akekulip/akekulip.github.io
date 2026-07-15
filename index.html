@@ -111,6 +111,18 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="sym-tower" viewBox="0 0 48 48"><path d="M18 44 L24 6 L30 44 M15 34 H33 M17 24 H31 M12 14 H36 M14 14 v5 M34 14 v5 M17 24 L30 34 M31 24 L18 34"/></symbol>
+    <symbol id="sym-switch" viewBox="0 0 48 48"><rect x="4" y="17" width="40" height="14" rx="2"/><path d="M8 22 h3 v4 h-3 z M13.5 22 h3 v4 h-3 z M19 22 h3 v4 h-3 z M24.5 22 h3 v4 h-3 z"/><circle cx="36.5" cy="24" r="1.2"/><circle cx="40.5" cy="24" r="1.2"/></symbol>
+    <symbol id="sym-nic" viewBox="0 0 48 48"><rect x="5" y="13" width="34" height="19" rx="2"/><rect x="15" y="18" width="9" height="9"/><path d="M9 32 v4 M13 32 v4 M17 32 v4 M21 32 v4 M25 32 v4 M29 32 v4 M33 32 v4 M42 9 v30"/></symbol>
+    <symbol id="sym-rtu" viewBox="0 0 48 48"><rect x="14" y="12" width="20" height="26" rx="2"/><path d="M30 12 L38 5"/><circle cx="38" cy="5" r="1.5"/><circle cx="19" cy="18" r="1.3"/><circle cx="24" cy="18" r="1.3"/><circle cx="29" cy="18" r="1.3"/><rect x="18" y="23" width="12" height="7"/><path d="M17 38 v3 M21 38 v3 M25 38 v3 M29 38 v3"/></symbol>
+    <symbol id="sym-plc" viewBox="0 0 48 48"><rect x="7" y="15" width="34" height="20" rx="2"/><path d="M11 15 v-3 M16 15 v-3 M21 15 v-3 M26 15 v-3 M31 15 v-3 M36 15 v-3 M11 35 v3 M16 35 v3 M21 35 v3 M26 35 v3 M31 35 v3 M36 35 v3"/><circle cx="12" cy="21" r="1.2"/><circle cx="12" cy="25" r="1.2"/><circle cx="12" cy="29" r="1.2"/><rect x="18" y="20" width="17" height="10"/></symbol>
+    <symbol id="sym-transformer" viewBox="0 0 48 48"><circle cx="24" cy="19" r="8"/><circle cx="24" cy="29" r="8"/><path d="M24 4 v7 M24 37 v7"/></symbol>
+    <symbol id="sym-doc" viewBox="0 0 48 48"><path d="M14 6 h14 l6 6 v30 h-20 z M28 6 v6 h6"/><path d="M18 20 h12 M18 26 h12 M18 32 h8"/></symbol>
+    <symbol id="sym-antenna" viewBox="0 0 48 48"><path d="M24 44 V22"/><circle cx="24" cy="20" r="2"/><path d="M16 16 a11 11 0 0 1 16 0 M11 11 a17 17 0 0 1 26 0"/></symbol>
+    <symbol id="sym-cap" viewBox="0 0 48 48"><path d="M24 10 L44 19 L24 28 L4 19 Z"/><path d="M14 23 v8 c0 3 20 3 20 0 v-8"/><path d="M40 21 v9"/></symbol>
+  </svg>
+
   <header class="topbar">
     <a class="brand" href="#top" aria-label="Philip Akekudaga, back to top">
       <span class="brand-mark" aria-hidden="true">PA</span>
@@ -158,6 +170,10 @@
 
       <!-- Signature: live SCADA scene — attack caught at the switch, shunted to a decoy -->
       <figure class="oneline" aria-label="Animated diagram: field devices send irregular telemetry into a P4 switch, which re-emits it at uniform size and fixed cadence so a passive observer on the WAN learns nothing, while an attacker's probe is intercepted and diverted to a decoy RTU">
+        <div class="viz-bar">
+          <span class="probe-count">probes deflected: <b id="probeCount">0</b></span>
+          <button class="probe-btn" id="probeBtn" type="button">&#9658; initiate probe</button>
+        </div>
         <svg viewBox="0 0 900 320" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
           <defs>
             <path id="tele-a" d="M 82,70 L 396,140"/>
@@ -191,12 +207,12 @@
 
           <!-- interception flash -->
           <circle class="ol-flash ol-anim" cx="450" cy="150" r="34" opacity="0">
-            <animate attributeName="opacity" values="0;0;0.85;0;0" keyTimes="0;0.56;0.60;0.68;1" dur="9s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="24;24;52;60;60" keyTimes="0;0.56;0.62;0.7;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.85;0" keyTimes="0;0.3;1" begin="atkMove.begin+2.7s" dur="0.9s"/>
+            <animate attributeName="r" values="24;52;60" keyTimes="0;0.6;1" begin="atkMove.begin+2.7s" dur="0.9s"/>
           </circle>
 
           <!-- obfuscation label on the WAN segment -->
-          <text class="ol-sub" x="662" y="134" text-anchor="middle">uniform size &middot; fixed cadence</text>
+          <text class="ol-sub ol-cyan" x="662" y="134" text-anchor="middle">uniform size &middot; fixed cadence</text>
 
           <!-- passive observer tapping the WAN link -->
           <line class="ol-wire ol-wire-dashed ol-observer-line" x1="662" y1="158" x2="662" y2="196"/>
@@ -213,13 +229,13 @@
           <!-- decoy -->
           <circle class="ol-decoy" cx="450" cy="258" r="12"/>
           <circle class="ol-decoy-ring ol-anim" cx="450" cy="258" r="12" opacity="0">
-            <animate attributeName="opacity" values="0;0;0.9;0;0" keyTimes="0;0.70;0.74;0.92;1" dur="9s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="12;12;34;40;40" keyTimes="0;0.70;0.80;0.92;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;0.9;0" keyTimes="0;0.2;1" begin="atkMove.begin+4.3s" dur="1.4s"/>
+            <animate attributeName="r" values="12;34;40" keyTimes="0;0.6;1" begin="atkMove.begin+4.3s" dur="1.4s"/>
           </circle>
           <text class="ol-label" x="500" y="256" text-anchor="start">decoy RTU</text>
           <text class="ol-sub" x="500" y="272" text-anchor="start">bait &middot; not real hardware</text>
           <text class="ol-engaged ol-anim" x="500" y="292" text-anchor="start" opacity="0">DECOY ENGAGED
-            <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.72;0.75;0.92;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.8;1" begin="atkMove.begin+4.4s" dur="2.6s"/>
           </text>
 
           <!-- device-timed telemetry in: mixed sizes, irregular cadence -->
@@ -233,28 +249,34 @@
             <animateMotion dur="4.1s" begin="2.2s" repeatCount="indefinite"><mpath href="#tele-c"/></animateMotion>
           </circle>
           <!-- obfuscated telemetry out: uniform size, fixed cadence (GridCloak) -->
-          <circle class="ol-pkt ol-anim" r="4">
+          <circle class="ol-pkt-u ol-anim" r="4">
             <animateMotion dur="3s" repeatCount="indefinite"><mpath href="#tele-u"/></animateMotion>
           </circle>
-          <circle class="ol-pkt ol-anim" r="4">
+          <circle class="ol-pkt-u ol-anim" r="4">
             <animateMotion dur="3s" begin="1s" repeatCount="indefinite"><mpath href="#tele-u"/></animateMotion>
           </circle>
-          <circle class="ol-pkt ol-anim" r="4">
+          <circle class="ol-pkt-u ol-anim" r="4">
             <animateMotion dur="3s" begin="2s" repeatCount="indefinite"><mpath href="#tele-u"/></animateMotion>
           </circle>
 
           <!-- attacker probe: rides in from the WAN, gets shunted to the decoy -->
-          <circle class="ol-atk ol-anim" r="5">
-            <animateMotion dur="9s" repeatCount="indefinite" calcMode="linear"
-              keyPoints="0;0;0.62;1;1" keyTimes="0;0.25;0.58;0.74;1">
+          <circle class="ol-atk ol-anim" r="5" opacity="0">
+            <animateMotion id="atkMove" dur="4.5s" begin="2s" restart="always">
               <mpath href="#atk-path"/>
             </animateMotion>
-            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.25;0.29;0.76;0.84;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.06;0.85;0.95;1" begin="atkMove.begin" dur="4.5s"/>
           </circle>
           <text class="ol-atk-label ol-anim" x="700" y="60" text-anchor="middle" opacity="0">unauthorized probe
-            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.27;0.31;0.5;0.58;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.75;1" begin="atkMove.begin+0.2s" dur="2.2s"/>
           </text>
         </svg>
+        <ul class="viz-legend" aria-hidden="true">
+          <li><span class="dot" style="--dot-c: var(--c-green)"></span>device telemetry</li>
+          <li><span class="dot" style="--dot-c: var(--c-cyan)"></span>obfuscated output</li>
+          <li><span class="dot" style="--dot-c: var(--c-red)"></span>unauthorized probe</li>
+          <li><span class="dot" style="--dot-c: var(--c-violet)"></span>decoy response</li>
+          <li><span class="dot" style="--dot-c: var(--c-amber)"></span>passive observer</li>
+        </ul>
         <figcaption class="mono-caption">Two ways to mislead, on one switch: traffic leaves obfuscated (uniform size, fixed cadence) and intruders get fed a decoy. That's the research.</figcaption>
       </figure>
 
@@ -278,6 +300,7 @@
 
     <!-- ============ ABOUT ============ -->
     <section class="section" id="about" aria-labelledby="about-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-green)"><svg><use href="#sym-tower"/></svg></div>
       <p class="section-eyebrow">01 &middot; about</p>
       <h2 id="about-h">Operator turned researcher</h2>
       <div class="two-col">
@@ -320,10 +343,23 @@
           </div>
         </aside>
       </div>
+
+      <div class="hw-band">
+        <h3 class="mono-h">the hardware in my world</h3>
+        <ul class="hw-row">
+          <li style="--hw-c: var(--c-green)"><svg aria-hidden="true"><use href="#sym-rtu"/></svg><span>RTU</span><small>remote telemetry</small></li>
+          <li style="--hw-c: var(--c-amber)"><svg aria-hidden="true"><use href="#sym-plc"/></svg><span>PLC</span><small>control logic</small></li>
+          <li style="--hw-c: var(--c-cyan)"><svg aria-hidden="true"><use href="#sym-switch"/></svg><span>P4 switch</span><small>Tofino data plane</small></li>
+          <li style="--hw-c: var(--c-violet)"><svg aria-hidden="true"><use href="#sym-nic"/></svg><span>SmartNIC</span><small>programmable NIC</small></li>
+          <li style="--hw-c: var(--c-red)"><svg aria-hidden="true"><use href="#sym-transformer"/></svg><span>Transformer</span><small>substation</small></li>
+          <li style="--hw-c: var(--c-green)"><svg aria-hidden="true"><use href="#sym-tower"/></svg><span>Transmission</span><small>the grid itself</small></li>
+        </ul>
+      </div>
     </section>
 
     <!-- ============ RESEARCH ============ -->
     <section class="section" id="research" aria-labelledby="research-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-cyan)"><svg><use href="#sym-switch"/></svg></div>
       <p class="section-eyebrow">02 &middot; research</p>
       <h2 id="research-h">Research focus</h2>
       <p class="section-lede">
@@ -331,7 +367,7 @@
         industrial devices, how to hide it, how to fake it, and how to decide where to look.
       </p>
       <div class="focus-grid">
-        <article class="focus-card">
+        <article class="focus-card fc-cyan">
           <h3>Traffic obfuscation for SCADA links</h3>
           <p>
             Encrypted SCADA traffic still leaks operational state through packet size and
@@ -341,7 +377,7 @@
           </p>
           <a class="focus-link" href="https://github.com/akekulip/GridCloak" target="_blank" rel="noopener">GridCloak &rarr;</a>
         </article>
-        <article class="focus-card">
+        <article class="focus-card fc-violet">
           <h3>Data-plane deception for ICS</h3>
           <p>
             A Tofino switch that impersonates DNP3 outstations: virtual RTUs with realistic
@@ -350,7 +386,7 @@
           </p>
           <a class="focus-link" href="https://github.com/akekulip/dnp3_decoy" target="_blank" rel="noopener">DNP3 Decoy &rarr;</a>
         </article>
-        <article class="focus-card">
+        <article class="focus-card fc-amber">
           <h3>In-network admission control</h3>
           <p>
             Deciding in the packet path what gets through: firmware rollout admission for
@@ -373,6 +409,7 @@
 
     <!-- ============ PROJECTS ============ -->
     <section class="section" id="projects" aria-labelledby="projects-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-violet)"><svg><use href="#sym-nic"/></svg></div>
       <p class="section-eyebrow">03 &middot; projects</p>
       <h2 id="projects-h">Featured projects</h2>
       <p class="section-lede">Research systems first, applied tools after. Everything linked is public.</p>
@@ -380,11 +417,15 @@
       <h3 class="group-h mono-h">research systems</h3>
       <div class="proj-grid">
 
-        <article class="proj-card">
+        <article class="proj-card pc-cyan">
           <header>
             <h4><a href="https://github.com/akekulip/GridCloak" target="_blank" rel="noopener">GridCloak</a></h4>
             <span class="proj-status chip chip-green">HW verified</span>
           </header>
+          <figure class="proj-fig">
+            <img src="assets/fig-gridcloak.jpg" alt="Plot comparing SCADA traffic before and after obfuscation: device-timed bursts become a uniform pattern" loading="lazy" width="720" height="449">
+            <figcaption>fig &mdash; the wire before and after obfuscation</figcaption>
+          </figure>
           <p>
             SCADA WAN traffic-obfuscation gateway on P4/Tofino. Defeats a passive observer
             who fingerprints encrypted SCADA links through packet size, timing, and volume:
@@ -395,7 +436,7 @@
           <ul class="tags"><li>P4 / Tofino</li><li>DNP3</li><li>Traffic analysis</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-violet">
           <header>
             <h4><a href="https://github.com/akekulip/dnp3_decoy" target="_blank" rel="noopener">DNP3 Decoy</a></h4>
             <span class="proj-status chip chip-green">HW verified</span>
@@ -409,10 +450,14 @@
           <ul class="tags"><li>P4 / Tofino</li><li>Deception</li><li>ICS/SCADA</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-amber">
           <header>
             <h4><a href="https://github.com/akekulip/OTA-Shield" target="_blank" rel="noopener">OTA-Shield</a></h4>
           </header>
+          <figure class="proj-fig">
+            <img src="assets/fig-ota.jpg" alt="Timeline of a benign firmware rollout admitted through OTA-Shield gates" loading="lazy" width="720" height="189">
+            <figcaption>fig &mdash; benign rollout admitted through the gates</figcaption>
+          </figure>
           <p>
             Hardware-measured reference architecture for in-network OTA firmware-rollout
             admission and bounded firmware-attack detection on battery energy storage (BESS)
@@ -422,7 +467,7 @@
           <ul class="tags"><li>P4 / Tofino</li><li>MQTT</li><li>DER security</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-amber">
           <header>
             <h4><a href="https://github.com/akekulip/sdnp-gateway" target="_blank" rel="noopener">SDNP Gateway</a></h4>
           </header>
@@ -440,6 +485,10 @@
             <h4><a href="https://github.com/akekulip/mcp" target="_blank" rel="noopener">MCP &mdash; Measurement Control Plane</a></h4>
             <span class="proj-status chip chip-amber">Under review</span>
           </header>
+          <figure class="proj-fig">
+            <img src="assets/fig-mcp.jpg" alt="Evaluation heatmap of MCP scores across scenarios and baselines" loading="lazy" width="720" height="449">
+            <figcaption>fig &mdash; scenario &times; baseline evaluation heatmap</figcaption>
+          </figure>
           <p>
             Decides every epoch which measurement tasks (sketches, sampling, watchlists,
             polling) run on which P4 switches under hard resource budgets, using a
@@ -459,7 +508,7 @@
           <ul class="tags"><li>Python</li><li>Bandits</li><li>Telemetry</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-violet">
           <header>
             <h4><a href="https://github.com/akekulip/MemProof" target="_blank" rel="noopener">MemProof</a></h4>
             <span class="proj-status chip chip-amber">Under review</span>
@@ -507,7 +556,7 @@
           <ul class="tags"><li>P4</li><li>Mininet</li><li>ECMP</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-red">
           <header>
             <h4><a href="https://github.com/akekulip/Quantifying-Systemic-Risk-in-Critical-Power-Infrastructure-Using-FDNA" target="_blank" rel="noopener">FDNA Systemic Risk</a></h4>
             <span class="proj-status chip chip-green">SIRAcon '25 winner</span>
@@ -524,7 +573,7 @@
 
       <h3 class="group-h mono-h">applied tools</h3>
       <div class="proj-grid">
-        <article class="proj-card">
+        <article class="proj-card pc-red">
           <header>
             <h4><a href="https://fair.akekudaga.com/" target="_blank" rel="noopener">FAIR Risk Analysis Platform</a></h4>
             <span class="proj-status chip chip-green">Live demo</span>
@@ -537,7 +586,7 @@
           <ul class="tags"><li>React</li><li>FAIR</li><li>Monte Carlo</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-red">
           <header>
             <h4><a href="https://github.com/akekulip/phishimpact-simulate-visualize" target="_blank" rel="noopener">Phishing Impact Assessment</a></h4>
           </header>
@@ -549,7 +598,7 @@
           <ul class="tags"><li>React</li><li>Risk</li><li>Visualization</li></ul>
         </article>
 
-        <article class="proj-card">
+        <article class="proj-card pc-violet">
           <header>
             <h4>Cloud Honeypot Threat Mapping</h4>
           </header>
@@ -565,6 +614,7 @@
 
     <!-- ============ EXPERIENCE ============ -->
     <section class="section" id="experience" aria-labelledby="experience-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-amber)"><svg><use href="#sym-transformer"/></svg></div>
       <p class="section-eyebrow">04 &middot; experience</p>
       <h2 id="experience-h">Experience</h2>
 
@@ -644,6 +694,7 @@
 
     <!-- ============ PUBLICATIONS ============ -->
     <section class="section" id="publications" aria-labelledby="publications-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-green)"><svg><use href="#sym-doc"/></svg></div>
       <p class="section-eyebrow">05 &middot; publications</p>
       <h2 id="publications-h">Publications</h2>
       <ol class="pubs" reversed>
@@ -684,6 +735,7 @@
 
     <!-- ============ SKILLS ============ -->
     <section class="section" id="skills" aria-labelledby="skills-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-cyan)"><svg><use href="#sym-plc"/></svg></div>
       <p class="section-eyebrow">06 &middot; skills</p>
       <h2 id="skills-h">Skills &amp; tools</h2>
       <div class="skills-grid">
@@ -737,6 +789,7 @@
 
     <!-- ============ EDUCATION ============ -->
     <section class="section" id="education" aria-labelledby="education-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-amber)"><svg><use href="#sym-cap"/></svg></div>
       <p class="section-eyebrow">07 &middot; education</p>
       <h2 id="education-h">Education, certifications &amp; awards</h2>
       <div class="edu-grid">
@@ -781,6 +834,7 @@
 
     <!-- ============ CONTACT ============ -->
     <section class="section section-contact" id="contact" aria-labelledby="contact-h">
+      <div class="sec-orn" aria-hidden="true" style="--orn-c: var(--c-violet)"><svg><use href="#sym-antenna"/></svg></div>
       <p class="section-eyebrow">08 &middot; contact</p>
       <h2 id="contact-h">Get in touch</h2>
       <p class="section-lede">

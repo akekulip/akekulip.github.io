@@ -23,8 +23,7 @@
 
   var stored = null;
   try { stored = localStorage.getItem("theme"); } catch (e) { /* private mode */ }
-  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  doc.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"));
+  doc.setAttribute("data-theme", stored || "dark");
   syncThemeColor();
 
   var toggle = document.getElementById("themeToggle");
@@ -77,6 +76,77 @@
       });
     }, { rootMargin: "-40% 0px -55% 0px" });
     sections.forEach(function (s) { spy.observe(s); });
+  }
+
+  /* ---------- hero: typing, count-up stats, scroll cue ---------- */
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var role = document.getElementById("heroRole");
+  if (role && !reduced) {
+    var full = role.textContent.trim();
+    role.textContent = "";
+    role.classList.add("typing");
+    var i = 0;
+    (function type() {
+      if (i <= full.length) {
+        role.textContent = full.slice(0, i);
+        i += 1;
+        setTimeout(type, 26);
+      } else {
+        setTimeout(function () { role.classList.remove("typing"); }, 4000);
+      }
+    })();
+  }
+
+  function formatCount(n) {
+    return n.toLocaleString("en-US");
+  }
+
+  function animateCount(el) {
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    var suffix = el.getAttribute("data-suffix") || "";
+    var t0 = null;
+    var dur = 1300;
+    function step(t) {
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = formatCount(Math.round(target * eased)) + (p === 1 ? suffix : "");
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  if (!reduced && "IntersectionObserver" in window) {
+    var counters = document.querySelectorAll(".stat-num[data-count]");
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          seen.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    counters.forEach(function (c) { seen.observe(c); });
+  }
+
+  /* ---------- scroll progress ---------- */
+
+  var progress = document.getElementById("scrollProgress");
+  if (progress) {
+    var ticking = false;
+    function updateProgress() {
+      var doc2 = document.documentElement;
+      var max = doc2.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+      progress.style.transform = "scaleX(" + p + ")";
+      ticking = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(updateProgress); }
+    }, { passive: true });
+    updateProgress();
   }
 
   /* ---------- copy email ---------- */

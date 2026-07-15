@@ -40,14 +40,15 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Set theme before first paint to avoid flash -->
+  <!-- Set theme before first paint to avoid flash. Dark is the default brand. -->
   <script>
     (function () {
       try {
-        var t = localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        var t = localStorage.getItem("theme") || "dark";
         document.documentElement.setAttribute("data-theme", t);
-      } catch (e) { /* default to light */ }
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
     })();
   </script>
 
@@ -108,6 +109,7 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
   <header class="topbar">
     <a class="brand" href="#top" aria-label="Philip Akekudaga, back to top">
@@ -138,9 +140,9 @@
   <main id="main">
     <!-- ============ HERO ============ -->
     <section class="hero" id="top" aria-label="Introduction">
-      <p class="eyebrow">Kingston, RI &middot; CYPHER Lab, University of Rhode Island</p>
+      <p class="eyebrow status-line"><span class="led" aria-hidden="true"></span>LIVE &middot; CYPHER LAB &middot; UNIVERSITY OF RHODE ISLAND &middot; KINGSTON, RI</p>
       <h1>Philip Akekudaga</h1>
-      <p class="hero-role">OT/ICS &amp; network security researcher. PhD student in Electrical Engineering.</p>
+      <p class="hero-role" id="heroRole">OT/ICS &amp; network security researcher. PhD student in Electrical Engineering.</p>
       <p class="hero-lede">
         I spent eight years running a national utility's SCADA and IT infrastructure.
         Now I build defenses for the power grid inside the network itself: P4 programs on
@@ -148,45 +150,110 @@
         reaches the control room.
       </p>
 
-      <ul class="fact-chips" aria-label="Quick facts">
-        <li><strong>8 yrs</strong> utility OT/IT operations</li>
-        <li><strong>8</strong> papers published or under review</li>
-        <li><strong>Tofino</strong> hardware-verified research</li>
-        <li><strong>Security+</strong> &middot; FAIR &middot; ATT&amp;CK certified</li>
-      </ul>
-
       <div class="hero-ctas">
         <a class="btn btn-primary" href="#projects">View projects</a>
         <a class="btn" href="resume/Philip_Akekudaga_Research_Portfolio.pdf" target="_blank" rel="noopener">Resume (PDF)</a>
         <a class="btn" href="https://github.com/akekulip" target="_blank" rel="noopener">GitHub</a>
       </div>
 
-      <!-- Signature: one-line diagram of where the research lives -->
-      <figure class="oneline" aria-label="Diagram: field devices connect through a P4 switch to the control center; the research lives at the switch">
-        <svg viewBox="0 0 760 120" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-          <!-- bus line -->
-          <line class="ol-wire" x1="60" y1="60" x2="330" y2="60"/>
-          <line class="ol-wire" x1="430" y1="60" x2="700" y2="60"/>
-          <!-- RTU node -->
-          <circle class="ol-node" cx="60" cy="60" r="7"/>
-          <text class="ol-label" x="60" y="92" text-anchor="middle">RTU / field devices</text>
-          <text class="ol-sub" x="60" y="106" text-anchor="middle">DNP3 &middot; Modbus &middot; 61850</text>
+      <!-- Signature: live SCADA scene — attack caught at the switch, shunted to a decoy -->
+      <figure class="oneline" aria-label="Animated diagram: field devices send telemetry through a P4 switch to the control center; an attacker's probe is intercepted at the switch and diverted to a decoy RTU">
+        <svg viewBox="0 0 900 320" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <path id="tele-a" d="M 82,70 L 390,138 L 510,150 L 816,150"/>
+            <path id="tele-b" d="M 82,150 L 390,150 L 510,150 L 816,150"/>
+            <path id="tele-c" d="M 82,230 L 390,162 L 510,150 L 816,150"/>
+            <path id="atk-path" d="M 880,36 L 560,118 L 512,138 L 452,258"/>
+          </defs>
+
+          <!-- wires -->
+          <line class="ol-wire" x1="82" y1="70"  x2="390" y2="138"/>
+          <line class="ol-wire" x1="82" y1="150" x2="390" y2="150"/>
+          <line class="ol-wire" x1="82" y1="230" x2="390" y2="162"/>
+          <line class="ol-wire" x1="510" y1="150" x2="816" y2="150"/>
+          <line class="ol-wire ol-wire-dashed" x1="450" y1="184" x2="450" y2="244"/>
+
+          <!-- field nodes -->
+          <circle class="ol-node" cx="78" cy="70" r="7"/>
+          <text class="ol-label" x="60" y="74" text-anchor="end">RTU-A</text>
+          <circle class="ol-node" cx="78" cy="150" r="7"/>
+          <text class="ol-label" x="60" y="154" text-anchor="end">RTU-B</text>
+          <circle class="ol-node" cx="78" cy="230" r="7"/>
+          <text class="ol-label" x="60" y="234" text-anchor="end">BESS</text>
+          <text class="ol-sub" x="24" y="280" text-anchor="start">field devices &middot; DNP3 / Modbus / 61850</text>
+
           <!-- P4 switch -->
-          <rect class="ol-switch" x="330" y="35" width="100" height="50" rx="4"/>
-          <text class="ol-switch-label" x="380" y="58" text-anchor="middle">P4 SWITCH</text>
-          <text class="ol-switch-sub" x="380" y="74" text-anchor="middle">Intel Tofino</text>
-          <text class="ol-here" x="380" y="20" text-anchor="middle">&#9660; my research lives here</text>
-          <!-- Control center node -->
-          <rect class="ol-node-sq" x="693" y="53" width="14" height="14"/>
-          <text class="ol-label" x="700" y="92" text-anchor="middle">Control center</text>
-          <text class="ol-sub" x="700" y="106" text-anchor="middle">SCADA master / EMS</text>
-          <!-- animated packets -->
-          <circle class="ol-pkt ol-pkt-1" cx="0" cy="60" r="4"/>
-          <circle class="ol-pkt ol-pkt-2" cx="0" cy="60" r="4"/>
+          <rect class="ol-switch" x="390" y="118" width="120" height="64" rx="6"/>
+          <text class="ol-switch-label" x="450" y="146" text-anchor="middle">P4 SWITCH</text>
+          <text class="ol-switch-sub" x="450" y="164" text-anchor="middle">Intel Tofino</text>
+          <text class="ol-here" x="450" y="100" text-anchor="middle">&#9660; my research lives here</text>
+
+          <!-- interception flash -->
+          <circle class="ol-flash ol-anim" cx="450" cy="150" r="34" opacity="0">
+            <animate attributeName="opacity" values="0;0;0.85;0;0" keyTimes="0;0.56;0.60;0.68;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="24;24;52;60;60" keyTimes="0;0.56;0.62;0.7;1" dur="9s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- control center -->
+          <rect class="ol-node-sq" x="808" y="142" width="16" height="16"/>
+          <text class="ol-label" x="816" y="186" text-anchor="middle">control center</text>
+          <text class="ol-sub" x="816" y="202" text-anchor="middle">SCADA master / EMS</text>
+
+          <!-- decoy -->
+          <circle class="ol-decoy" cx="450" cy="258" r="12"/>
+          <circle class="ol-decoy-ring ol-anim" cx="450" cy="258" r="12" opacity="0">
+            <animate attributeName="opacity" values="0;0;0.9;0;0" keyTimes="0;0.70;0.74;0.92;1" dur="9s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="12;12;34;40;40" keyTimes="0;0.70;0.80;0.92;1" dur="9s" repeatCount="indefinite"/>
+          </circle>
+          <text class="ol-label" x="500" y="256" text-anchor="start">decoy RTU</text>
+          <text class="ol-sub" x="500" y="272" text-anchor="start">bait &middot; not real hardware</text>
+          <text class="ol-engaged ol-anim" x="500" y="292" text-anchor="start" opacity="0">DECOY ENGAGED
+            <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.72;0.75;0.92;1" dur="9s" repeatCount="indefinite"/>
+          </text>
+
+          <!-- telemetry packets -->
+          <circle class="ol-pkt ol-anim" r="4">
+            <animateMotion dur="4s" repeatCount="indefinite"><mpath href="#tele-a"/></animateMotion>
+          </circle>
+          <circle class="ol-pkt ol-anim" r="4">
+            <animateMotion dur="5s" begin="1.4s" repeatCount="indefinite"><mpath href="#tele-b"/></animateMotion>
+          </circle>
+          <circle class="ol-pkt ol-anim" r="4">
+            <animateMotion dur="4.6s" begin="2.6s" repeatCount="indefinite"><mpath href="#tele-c"/></animateMotion>
+          </circle>
+
+          <!-- attacker probe: rides in from the WAN, gets shunted to the decoy -->
+          <circle class="ol-atk ol-anim" r="5">
+            <animateMotion dur="9s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;0.62;1;1" keyTimes="0;0.25;0.58;0.74;1">
+              <mpath href="#atk-path"/>
+            </animateMotion>
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.25;0.29;0.76;0.84;1" dur="9s" repeatCount="indefinite"/>
+          </circle>
+          <text class="ol-atk-label ol-anim" x="700" y="60" text-anchor="middle" opacity="0">unauthorized probe
+            <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.27;0.31;0.5;0.58;1" dur="9s" repeatCount="indefinite"/>
+          </text>
         </svg>
-        <figcaption class="mono-caption">Detection, deception, and admission control at the switch, in the packet path, at line rate.</figcaption>
+        <figcaption class="mono-caption">Every 9 seconds: telemetry flows, a probe comes in, the switch catches it and feeds it a decoy. That's the research.</figcaption>
       </figure>
+
+      <ul class="stats" aria-label="Key numbers">
+        <li><span class="stat-num" data-count="8">8</span><span class="stat-label">years running utility OT/IT</span></li>
+        <li><span class="stat-num" data-count="8">8</span><span class="stat-label">papers published or under review</span></li>
+        <li><span class="stat-num" data-count="10000" data-suffix="+">10,000+</span><span class="stat-label">events/sec classified in-network</span></li>
+        <li><span class="stat-num">&lt;50<span class="stat-unit">ms</span></span><span class="stat-label">automated remediation</span></li>
+      </ul>
+
+      <p class="scroll-cue" aria-hidden="true"><span class="scroll-cue-text">scroll</span><span class="scroll-cue-chevron">&#9662;</span></p>
     </section>
+
+    <!-- protocol ticker -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>DNP3</span><span>MODBUS</span><span>IEC 61850</span><span>P4_16</span><span>INTEL TOFINO</span><span>P4RUNTIME</span><span>SPARKPLUG B</span><span>SPLUNK</span><span>SENTINEL</span><span>WIRESHARK</span><span>SCAPY</span><span>NIST 800-82</span><span>IEC 62443</span><span>MITRE ATT&amp;CK</span><span>FAIR</span><span>PURDUE MODEL</span><span>RUST</span><span>PYTHON</span>
+        <span>DNP3</span><span>MODBUS</span><span>IEC 61850</span><span>P4_16</span><span>INTEL TOFINO</span><span>P4RUNTIME</span><span>SPARKPLUG B</span><span>SPLUNK</span><span>SENTINEL</span><span>WIRESHARK</span><span>SCAPY</span><span>NIST 800-82</span><span>IEC 62443</span><span>MITRE ATT&amp;CK</span><span>FAIR</span><span>PURDUE MODEL</span><span>RUST</span><span>PYTHON</span>
+      </div>
+    </div>
 
     <!-- ============ ABOUT ============ -->
     <section class="section" id="about" aria-labelledby="about-h">

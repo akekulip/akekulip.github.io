@@ -1,14 +1,14 @@
 {
-  "name": "Philip Akekudaga | Network Security Researcher",
+  "name": "Philip Akekudaga | OT/ICS & Network Security Researcher",
   "short_name": "P. Akekudaga",
-  "description": "PhD researcher at URI — P4/SDN, Intel Tofino, ICS/OT cybersecurity.",
+  "description": "PhD researcher at URI's CYPHER Lab. In-network defense for the power grid: P4 on Intel Tofino, DNP3/SCADA security, deception, and measurement.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0e14",
-  "theme_color": "#4da8da",
+  "background_color": "#f4f7f5",
+  "theme_color": "#0e7c5b",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%230a0e14'/><text x='4' y='23' font-family='monospace' font-size='20' fill='%234da8da'>%3E_</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230e7c5b'/><text x='16' y='22' font-family='monospace' font-size='16' font-weight='bold' fill='white' text-anchor='middle'>PA</text></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }

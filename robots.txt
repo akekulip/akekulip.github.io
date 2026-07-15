@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://akekudaga.com/sitemap.xml
-https://www.linkedin.com/in/pakekudaga/
+Sitemap: https://akekulip.github.io/sitemap.xml

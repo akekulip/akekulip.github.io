@@ -119,12 +119,13 @@
   }
 
   if (!reduced && "IntersectionObserver" in window) {
-    var counters = document.querySelectorAll(".stat-num[data-count]");
+    var counters = Array.prototype.slice.call(document.querySelectorAll(".stat-num[data-count]"));
     var seen = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          animateCount(entry.target);
-          seen.unobserve(entry.target);
+          var el = entry.target;
+          setTimeout(function () { animateCount(el); }, counters.indexOf(el) * 90);
+          seen.unobserve(el);
         }
       });
     }, { threshold: 0.4 });
@@ -162,6 +163,69 @@
           copyBtn.classList.remove("copied");
         }, 1600);
       });
+    });
+  }
+
+  /* ---------- terminal easter egg ---------- */
+
+  var termOut = document.getElementById("termOut");
+  var termForm = document.getElementById("termForm");
+  var termIn = document.getElementById("termIn");
+  if (termOut && termForm && termIn) {
+    var PROJECTS = "gridcloak/  dnp3_decoy/  ota-shield/  sdnp-gateway/  memproof/  mcp/  agent-p4/  adaptive_routing/  fdna/";
+    var CMDS = {
+      help: function () {
+        return "commands: whoami · ls projects · cat skills · decoy · theme · resume · clear";
+      },
+      whoami: function () {
+        return "philip akekudaga — operator turned researcher.\n8 yrs utility OT/IT -> NYSDOH CISO office -> PhD @ URI CYPHER Lab.";
+      },
+      ls: function () { return PROJECTS; },
+      "ls projects": function () { return PROJECTS; },
+      "cat skills": function () {
+        return "[ot/ics]     dnp3 modbus iec-61850 purdue-model\n[dataplane]  p4_16 tofino bmv2 p4runtime\n[soc]        splunk sentinel nessus wireshark\n[code]       python c/c++ rust bash";
+      },
+      decoy: function () {
+        return "spawning virtual RTU... ok\nMAC 02:42:d3:c0:11:07   port 20000/tcp open (dnp3)\nwaiting for scans...    [DECOY ENGAGED]";
+      },
+      theme: function () {
+        var next = doc.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        applyTheme(next);
+        return "theme -> " + next;
+      },
+      resume: function () {
+        window.open("resume/Philip_Akekudaga_Research_Portfolio.pdf", "_blank", "noopener");
+        return "opening resume.pdf...";
+      },
+      clear: function () { termOut.textContent = ""; return null; }
+    };
+
+    function termLine(html2) {
+      var div = document.createElement("div");
+      div.innerHTML = html2;
+      termOut.appendChild(div);
+      termOut.scrollTop = termOut.scrollHeight;
+    }
+    function esc(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    termLine('<span class="t-dim">connected to cypher-lab. type</span> help <span class="t-dim">to look around.</span>');
+
+    termForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var raw = termIn.value.trim();
+      termIn.value = "";
+      if (!raw) return;
+      termLine('<span class="t-ps1">philip@cypher-lab:~$</span> ' + esc(raw));
+      var cmd = raw.toLowerCase().replace(/\s+/g, " ");
+      var fn = CMDS[cmd];
+      if (fn) {
+        var out = fn();
+        if (out) termLine(esc(out));
+      } else {
+        termLine('<span class="t-dim">command not found: ' + esc(cmd) + " — try 'help'</span>");
+      }
     });
   }
 

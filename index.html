@@ -307,7 +307,7 @@
         <div>
           <p>
             I am a PhD student in Electrical Engineering at the University of Rhode Island,
-            working in the CYPHER Lab under Dr. Hui Lin on ONR- and NSF-funded research.
+            working in the CYPHER Lab under Dr. Hui Lin on ONR-, NSF- and DOE-funded research.
             My work sits at the intersection of programmable data planes and critical
             infrastructure security: I write P4 programs for Intel Tofino ASICs that
             detect threats, impersonate industrial devices, and control what the network
@@ -335,7 +335,7 @@
           <h3 class="mono-h">at a glance</h3>
           <dl>
             <dt>Advisor</dt><dd>Dr. Hui Lin, CYPHER Lab</dd>
-            <dt>Funding</dt><dd>ONR &amp; NSF projects</dd>
+            <dt>Funding</dt><dd>ONR, NSF &amp; DOE projects</dd>
             <dt>Focus</dt><dd>In-network defense for ICS/OT</dd>
             <dt>Hardware</dt><dd>Intel Tofino 1 (TNA), BMv2</dd>
             <dt>Status</dt><dd>Open to internships &amp; collaborations (F-1, CPT authorized)</dd>
@@ -398,9 +398,7 @@
         <article class="focus-card">
           <h3>Measurement control</h3>
           <p>
-            Networks can't measure everything at once. MCP is a control-plane subsystem
-            that decides, every epoch, which measurement tasks run on which P4 switches
-            under hard resource budgets, using a constrained contextual bandit.
+            Networks can't measure everything at once. MCP is a control-plane subsystem that allocates sketch, sampling and mirroring tasks across P4 switches under a fixed switch-resource budget.
           </p>
           <a class="focus-link" href="https://github.com/akekulip/mcp" target="_blank" rel="noopener">MCP &rarr;</a>
         </article>
@@ -485,24 +483,21 @@
             <h4><a href="https://github.com/akekulip/mcp" target="_blank" rel="noopener">MCP &mdash; Measurement Control Plane</a></h4>
             <span class="proj-status chip chip-amber">Under review</span>
           </header>
-          <figure class="proj-fig">
-            <img src="assets/fig-mcp.jpg" alt="Evaluation heatmap of MCP scores across scenarios and baselines" loading="lazy" width="720" height="449">
-            <figcaption>fig &mdash; scenario &times; baseline evaluation heatmap</figcaption>
-          </figure>
           <p>
-            Decides every epoch which measurement tasks (sketches, sampling, watchlists,
-            polling) run on which P4 switches under hard resource budgets, using a
-            constrained contextual bandit with shadow prices. Ranked first against six
-            baselines on five of nine evaluation scenarios.
+            Allocation of sketch, sampling and mirroring tasks across P4 switches under a
+            fixed switch-resource budget. The current direction treats a directed link as
+            conditionally healthy per packet context, so a failing context reroutes while
+            contexts proven safe keep the link and their normal hash spread, carried in
+            header space that already existed at zero added wire bytes.
           </p>
           <table class="mini-metrics">
-            <caption class="sr-only">MCP evaluation results</caption>
-            <thead><tr><th scope="col">Scenario</th><th scope="col">Score</th><th scope="col">Rank</th></tr></thead>
+            <caption class="sr-only">Measured on Intel Tofino-1 silicon</caption>
+            <thead><tr><th scope="col">Measured on Tofino-1</th><th scope="col">Result</th></tr></thead>
             <tbody>
-              <tr><td>Flash crowd</td><td>0.564</td><td>1st / 7</td></tr>
-              <tr><td>Single DDoS</td><td>0.550</td><td>1st / 7</td></tr>
-              <tr><td>Multi-attack</td><td>0.515</td><td>1st / 7</td></tr>
-              <tr><td>Overall</td><td>5 / 9 wins</td><td>Best</td></tr>
+              <tr><td>Program placement</td><td>11 ingress / 4 egress stages, 36 tables</td></tr>
+              <tr><td>Sublinks in sync</td><td>17 of 17</td></tr>
+              <tr><td>Detect to reroute</td><td>20 / 20 trials, 5 ms switch-clock median</td></tr>
+              <tr><td>Demand-targeted census</td><td>250 ms &rarr; 7.7 ms median</td></tr>
             </tbody>
           </table>
           <ul class="tags"><li>Python</li><li>Bandits</li><li>Telemetry</li></ul>
@@ -699,6 +694,10 @@
       <h2 id="publications-h">Publications</h2>
       <ol class="pubs" reversed>
         <li>
+          <p class="pub-title">Hawk: Gray Failure Localization in Packet-Sprayed AI Fabrics</p>
+          <p class="pub-venue">NSDI '27 Fall, 24th USENIX Symposium on Networked Systems Design and Implementation <span class="chip chip-amber">Under review</span></p>
+        </li>
+        <li>
           <p class="pub-title">Where Should the Network Look Next? Multi-Objective Measurement Control for Programmable Network Monitoring</p>
           <p class="pub-venue">NSDI Frontiers Track <span class="chip chip-amber">Under review</span></p>
         </li>
@@ -719,8 +718,12 @@
           <p class="pub-venue">IEEE UEMCON 2025, New York, NY <span class="chip chip-green">Accepted</span></p>
         </li>
         <li>
+          <p class="pub-title">Privacy-Preserving Lightweight IDS for Smart Home Botnet Defense</p>
+          <p class="pub-venue">IEEE UEMCON 2025, New York, NY <span class="chip chip-green">Accepted</span></p>
+        </li>
+        <li>
           <p class="pub-title">A Framework for Financial Markets Impact Assessment of Data Breaches Using Interpretable Machine Learning and Event Study Methods</p>
-          <p class="pub-venue">ASIA '25, Albany, NY <span class="chip chip-green">Published</span></p>
+          <p class="pub-venue">ASIA '25, Albany, NY <span class="chip">Conference presentation</span></p>
         </li>
         <li>
           <p class="pub-title">Resilient IoT Security: Early Flood Attack Detection in IoT Networks Using GRU Deep Learning Model</p>
@@ -728,7 +731,7 @@
         </li>
         <li>
           <p class="pub-title">When the Ground Shakes: Social Media Responses to the 2024 Northeast Earthquake</p>
-          <p class="pub-venue"><a href="https://doi.org/10.2139/ssrn.5462365" target="_blank" rel="noopener">doi:10.2139/ssrn.5462365</a> <span class="chip chip-green">In press</span></p>
+          <p class="pub-venue">Y. Dadson, P. Akekudaga &middot; SSRN doi:10.2139/ssrn.5462365 <span class="chip">Preprint</span></p>
         </li>
       </ol>
     </section>
